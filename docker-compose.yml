@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  node-server:
+    container_name: node-server
+    build: .
+    ports:
+      - ${NODE_SERVER_PORT}:${NODE_SERVER_PORT}
+    volumes:
+      - ./:/opt/ask-backend
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+    logging:
+      driver: none
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - 6379:6379
+volumes:
+  mongodb:
+    
