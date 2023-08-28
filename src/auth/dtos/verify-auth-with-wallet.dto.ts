@@ -1,7 +1,7 @@
-import { IsAddress } from '@/common/validations/isAddress.decorator'
+import { IsAddress } from '@/common/validations/is-address.decorator'
 import { IsString } from 'class-validator'
 
-export class VerifySignInDto {
+export class VerifyAuthWithWalletDto {
   /**
    * Address of the wallet
    */

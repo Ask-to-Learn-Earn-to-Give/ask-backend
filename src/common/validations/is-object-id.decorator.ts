@@ -1,19 +1,18 @@
+import { Id } from '@/common'
 import { registerDecorator } from 'class-validator'
 
-import mongoose from 'mongoose'
-
-export function IsObjectId() {
+export function IsId() {
   return function (object: any, propertyName: string) {
     registerDecorator({
-      name: 'IsObjectId',
+      name: 'IsId',
       target: object.constructor,
       propertyName: propertyName,
       validator: {
         validate(value: any) {
-          return mongoose.Types.ObjectId.isValid(value)
+          return Id.isValid(value)
         },
         defaultMessage() {
-          return '$property must be a valid ObjectId'
+          return '$property must be a valid Id'
         },
       },
     })

@@ -1,12 +1,25 @@
-import { Body, Controller, Inject, Post } from '@nestjs/common'
-import { AuthWithWalletDto } from './dto/authWithWallet.dto'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Inject,
+  Post,
+} from '@nestjs/common'
+import { AuthWithWalletDto } from './dtos/auth-with-wallet'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
-import { VerifySignInDto } from './dto/verifySignIn.dto'
+import { JwtService } from '@nestjs/jwt'
+import { UserService } from '@/user/user.service'
+import { UserDocument } from '@/user/user.model'
+import { VerifyAuthWithWalletDto } from './dtos/verify-auth-with-wallet.dto'
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+  ) {}
 
   /**
    * Authenticate using wallet address
@@ -17,6 +30,15 @@ export class AuthController {
    * - Server responds with a nonce number
    * - Client signs the nonece number with their private key & resends it to the server
    * - Server verifies the signature & signs a JWT token
+   *
+   * Response:
+   * ```json
+   * {
+   *  "data": {
+   *    "nonce": "<nonce number>"
+   *  }
+   * }
+   * ```
    */
   @Post('/wallet')
   async authWithWallet(@Body() { address }: AuthWithWalletDto) {
@@ -32,14 +54,38 @@ export class AuthController {
   /**
    * Verify the signature of the nonce number and sign a JWT token
    *
-   * @returns {string} JWT token
+   * Response:
+   * ```json
+   * {
+   *  "data": {
+   *    "token": "<JWT token>"
+   *  }
+   * }
+   * ```
    */
   @Post('/wallet/verify')
   async verifyWalletSignature(
-    @Body() { address, signedNonce }: VerifySignInDto,
+    @Body() { address, signedNonce }: VerifyAuthWithWalletDto,
   ) {
     const nonce = await this.cacheManager.get('auth:' + address)
 
-    return nonce
+    if (!nonce) {
+      throw new BadRequestException(
+        'You must get a nonce number before verifying the signature',
+      )
+    }
+
+    let user = await this.userService.findByAddress(address)
+
+    if (!user) {
+      user = await this.userService.create(address)
+    }
+
+    const token = this.jwtService.sign(
+      { _id: (user as UserDocument)._id, address },
+      { expiresIn: '100d' },
+    )
+
+    return { data: { token } }
   }
 }

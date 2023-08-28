@@ -1,4 +1,4 @@
-import { IsAddress } from '@/common/validations/isAddress.decorator'
+import { IsAddress } from '@/common/validations/is-address.decorator'
 
 export class AuthWithWalletDto {
   /**

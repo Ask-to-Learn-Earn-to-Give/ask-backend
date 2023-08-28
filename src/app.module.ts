@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { redisStore } from 'cache-manager-redis-yet'
 import { CacheModule } from '@nestjs/cache-manager'
+import { ProblemModule } from './problem/problem.module'
+import { ChatModule } from './chat/chat.module'
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { CacheModule } from '@nestjs/cache-manager'
     }),
     UserModule,
     AuthModule,
+    ProblemModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
