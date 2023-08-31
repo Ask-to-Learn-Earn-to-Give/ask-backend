@@ -24,7 +24,7 @@ export class ProblemController {
     const problems = await (author
       ? this.problemService.findByAuthor(limit, skip, author)
       : this.problemService.find(limit, skip))
-    return { data: { problems } }
+    return { problems }
   }
 
   @UseGuards(AuthGuard)
@@ -34,7 +34,7 @@ export class ProblemController {
       payload._id,
       data.onchainId,
     )
-    return { data: { problem } }
+    return { problem }
   }
 
   /**
@@ -62,6 +62,6 @@ export class ProblemController {
       },
     )
 
-    return { data: { problem } }
+    return { problem }
   }
 }

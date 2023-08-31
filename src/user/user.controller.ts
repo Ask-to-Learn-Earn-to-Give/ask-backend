@@ -29,28 +29,24 @@ export class UserController {
       throw new NotFoundException('User not found')
     }
 
-    return { data: { user } }
+    return { user }
   }
 
   @Get('/')
   async getUserByField(
     @Query() { username, address }: FindByUsernameOrAddressDto,
   ) {
-    if (!username && !address) {
-      throw new BadRequestException(
-        'Either username or address must be provided',
-      )
-    }
-
     const user = await (username
       ? this.userService.findByUsername(username)
-      : this.userService.findByAddress(address))
+      : address
+      ? this.userService.findByAddress(address)
+      : this.userService.findAll())
 
     if (!user) {
       throw new NotFoundException('User not found')
     }
 
-    return { data: { user } }
+    return { user }
   }
 
   @UseGuards(AuthGuard)

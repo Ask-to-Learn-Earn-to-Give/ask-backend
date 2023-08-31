@@ -10,8 +10,8 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { JwtService } from '@nestjs/jwt'
 import { UserService } from '@/user/user.service'
-import { UserDocument } from '@/user/user.model'
 import { VerifyAuthWithWalletDto } from './dtos/verify-auth-with-wallet.dto'
+import { ethers } from 'ethers'
 
 @Controller('auth')
 export class AuthController {
@@ -43,12 +43,11 @@ export class AuthController {
   @Post('/wallet')
   async authWithWallet(@Body() { address }: AuthWithWalletDto) {
     // generate a random nonce number
-    const nonce = Math.floor(Math.random() * 1000000)
+    const nonce = Math.floor(Math.random() * 1000000).toString()
 
     // store the nonce number in redis with the wallet address as key
-    await this.cacheManager.set('auth:' + address, nonce, 2000)
-
-    return { data: { nonce } }
+    await this.cacheManager.set('auth:' + address, nonce, 20000000)
+    return { nonce }
   }
 
   /**
@@ -63,16 +62,23 @@ export class AuthController {
    * }
    * ```
    */
-  @Post('/wallet/verify')
+  @Post('/verify-wallet')
   async verifyWalletSignature(
     @Body() { address, signedNonce }: VerifyAuthWithWalletDto,
   ) {
-    const nonce = await this.cacheManager.get('auth:' + address)
+    const nonce: string = await this.cacheManager.get('auth:' + address)
 
     if (!nonce) {
       throw new BadRequestException(
         'You must get a nonce number before verifying the signature',
       )
+    }
+
+    // verify the signed nonce number
+    const verifiedAddress = ethers.verifyMessage(nonce, signedNonce)
+
+    if (verifiedAddress.toLowerCase() !== address) {
+      throw new BadRequestException('Invalid signed nonce number')
     }
 
     let user = await this.userService.findByAddress(address)
@@ -82,10 +88,10 @@ export class AuthController {
     }
 
     const token = this.jwtService.sign(
-      { _id: (user as UserDocument)._id, address },
+      { _id: user._id, address },
       { expiresIn: '100d' },
     )
 
-    return { data: { token } }
+    return { token }
   }
 }

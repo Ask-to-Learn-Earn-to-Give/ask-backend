@@ -897,13 +897,13 @@
     path-to-regexp "3.2.0"
     tslib "2.6.1"
 
-"@nestjs/platform-socket.io@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.npmjs.org/@nestjs/platform-socket.io/-/platform-socket.io-10.2.0.tgz"
-  integrity sha512-3WHYkEiaEyOGiCtDYu86LWjuRguXo0V93SN17mhwC+f/vcqOm6bao36e4NdfO8aM642Q74WZYpO/KQ1EcLuMjA==
+"@nestjs/platform-socket.io@^10.2.2":
+  version "10.2.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-socket.io/-/platform-socket.io-10.2.2.tgz#97f79d0d6069b1360fbbef257ddab83dd3642b87"
+  integrity sha512-63+R9z1e90eJs6z5anzZV+TF5csfVhN8zU2nP2mNi7herSh9cr/4pVSHAO+FN7T/kNIUX6h2bxEthC5v2oz7pA==
   dependencies:
     socket.io "4.7.2"
-    tslib "2.6.1"
+    tslib "2.6.2"
 
 "@nestjs/schematics@^10.0.0", "@nestjs/schematics@^10.0.1":
   version "10.0.2"
@@ -923,14 +923,14 @@
   dependencies:
     tslib "2.6.1"
 
-"@nestjs/websockets@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.npmjs.org/@nestjs/websockets/-/websockets-10.2.0.tgz"
-  integrity sha512-HPW/k6IB1fxGnZE5kABi8u9xTy96HvTEuZhkjvWYIQODnKJ8bkvO5tZzGnBYosIlGMnwmC8mzX2pDjg7oRMRMA==
+"@nestjs/websockets@^10.2.2":
+  version "10.2.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/websockets/-/websockets-10.2.2.tgz#a1ab4b5896d1b9a4b54bd040e8e6dea18f3af6ee"
+  integrity sha512-bKTdiGyVazmD1frvl7hzSOqsYOzdi4V4C9lxebbWj3rd5YHJRaZvRxHHGbum7bO61TkA+gqQBWkM76Uk0VL6iA==
   dependencies:
     iterare "1.2.1"
     object-hash "3.0.0"
-    tslib "2.6.1"
+    tslib "2.6.2"
 
 "@noble/hashes@1.1.2":
   version "1.1.2"
@@ -1295,6 +1295,13 @@
     "@types/http-errors" "*"
     "@types/mime" "*"
     "@types/node" "*"
+
+"@types/socket.io@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/socket.io/-/socket.io-3.0.2.tgz#606c9639e3f93bb8454cba8f5f0a283d47917759"
+  integrity sha512-pu0sN9m5VjCxBZVK8hW37ZcMe8rjn4HHggBN5CbaRTvFwv5jOmuIRZEuddsBPa9Th0ts0SIo3Niukq+95cMBbQ==
+  dependencies:
+    socket.io "*"
 
 "@types/stack-utils@^2.0.0":
   version "2.0.1"
@@ -5183,7 +5190,7 @@ socket.io-parser@~4.2.4:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
-socket.io@4.7.2:
+socket.io@*, socket.io@4.7.2:
   version "4.7.2"
   resolved "https://registry.npmjs.org/socket.io/-/socket.io-4.7.2.tgz"
   integrity sha512-bvKVS29/I5fl2FGLNHuXlQaUH/BlzX1IN6S+NKLNZpBsPZIDH+90eQmCs2Railn4YUiww4SzUedJ6+uzwFnKLw==
@@ -5581,7 +5588,7 @@ tslib@2.6.1:
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.1.tgz"
   integrity sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==
 
-tslib@^2.1.0, tslib@^2.5.0, tslib@^2.6.0:
+tslib@2.6.2, tslib@^2.1.0, tslib@^2.5.0, tslib@^2.6.0:
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==

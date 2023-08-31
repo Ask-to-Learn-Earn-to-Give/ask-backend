@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { UserModule } from './user/user.module'
 import { AuthModule } from './auth/auth.module'
 import { redisStore } from 'cache-manager-redis-yet'
 import { CacheModule } from '@nestjs/cache-manager'
 import { ProblemModule } from './problem/problem.module'
-import { ChatModule } from './chat/chat.module'
 
 @Module({
   imports: [
@@ -27,9 +24,7 @@ import { ChatModule } from './chat/chat.module'
     UserModule,
     AuthModule,
     ProblemModule,
-    ChatModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

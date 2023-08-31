@@ -11,6 +11,15 @@ export class UserService {
   ) {}
 
   /**
+   * Find all users
+   *
+   * @returns All users
+   */
+  async findAll() {
+    return await this.userModel.find()
+  }
+
+  /**
    * Find a user by id
    *
    * @param id The id of the user

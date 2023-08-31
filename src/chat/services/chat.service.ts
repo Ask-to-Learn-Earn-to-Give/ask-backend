@@ -41,7 +41,7 @@ export class ChatService {
     return chatGroup
   }
 
-  async sendMessage(chatGroupId: Id, senderId: Id, content: string) {
+  async createMessage(chatGroupId: Id, senderId: Id, content: string) {
     await this.checkUserInChatGroup(chatGroupId, senderId)
 
     const chatMessage = await this.chatMessageModel.create({
@@ -53,11 +53,38 @@ export class ChatService {
     return chatMessage
   }
 
-  async checkUserInChatGroup(chatGroupId: Id, userId: Id) {
-    const chatGroup = await this.chatGroupModel.findById(chatGroupId)
+  async findMessagesByUser(
+    userId: Id,
+    chatGroupId: Id,
+    limit: number,
+    skip: number,
+  ) {
+    await this.checkUserInChatGroup(chatGroupId, userId)
+    return await this.findMessages(chatGroupId, limit, skip)
+  }
 
-    if (!chatGroup.members.some((member: any) => member.equals(userId))) {
+  async findMessages(chatGroupId: Id, limit: number, skip: number) {
+    const messages = await this.chatMessageModel
+      .find({ chatGroupId })
+      .limit(limit)
+      .skip(skip)
+    return messages
+  }
+
+  async checkUserInChatGroup(chatGroupId: Id, userId: Id) {
+    if (!this.isUserInChatGroup(chatGroupId, userId)) {
       throw new ForbiddenException('User is not in chat group')
     }
+  }
+
+  async isUserInChatGroup(chatGroupId: Id, userId: Id) {
+    const count = await this.chatGroupModel.count({
+      _id: chatGroupId,
+      members: {
+        $in: [userId],
+      },
+    })
+
+    return count > 0
   }
 }
