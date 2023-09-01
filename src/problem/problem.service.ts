@@ -7,13 +7,9 @@ import {
 } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import {
-  Problem,
-  ProblemDocument,
-  ProblemStatus,
-} from '../models/problem.model'
+import { Problem, ProblemDocument, ProblemStatus } from './models/problem.model'
 import { Id } from '@/common'
-import { ChatService } from '@/chat/services/chat.service'
+import { ChatService } from '@/chat/chat.service'
 
 @Injectable()
 export class ProblemService {

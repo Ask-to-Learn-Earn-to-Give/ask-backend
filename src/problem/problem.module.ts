@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
-import { ProblemController } from './controllers/problem.controller'
-import { ProblemService } from './services/problem.service'
+import { ProblemController } from './problem.controller'
+import { ProblemService } from './problem.service'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Problem, ProblemSchema } from './models/problem.model'
 import { UserModule } from '@/user/user.module'

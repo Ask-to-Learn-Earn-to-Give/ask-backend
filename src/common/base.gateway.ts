@@ -1,53 +1,75 @@
 import { Id } from '@/common'
-import { Namespace, Server } from 'socket.io'
+import { JwtService } from '@nestjs/jwt'
+import {
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+} from '@nestjs/websockets'
+import { Namespace, Socket } from 'socket.io'
 
-export abstract class WsService {
+type GatewayOptions = {
+  namespace: string
+  requireAuth: boolean
+}
+
+export abstract class BaseGateway
+  implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
+{
   private io: Namespace
   private userToSockets: Map<string, Set<string>> = new Map()
   private socketToUser: Map<string, string> = new Map()
-  private namespace: string
 
-  constructor(namespace: string) {
-    this.namespace = namespace
-  }
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly options: GatewayOptions,
+  ) {}
 
-  getUserId(socketId: string) {
-    return new Id(this.socketToUser.get(socketId))
-  }
+  handleConnection(socket: Socket) {
+    const token = socket.handshake.query.token as string
 
-  /**
-   * Store the socket id of the user for later use
-   *
-   * @param userId Id of the user
-   * @param socketId Id of the socket
-   */
-  addSocket(userId: Id, socketId: string) {
-    const strUserId = userId.toString()
-
-    if (!this.userToSockets.has(strUserId)) {
-      this.userToSockets.set(strUserId, new Set())
+    if (!token) {
+      if (this.options.requireAuth) {
+        socket.disconnect(true)
+      }
     }
 
-    this.userToSockets.get(strUserId).add(socketId)
-    this.socketToUser.set(socketId, strUserId)
+    try {
+      const { _id: userId } = this.jwtService.verify(token)
+
+      if (!this.userToSockets.has(userId)) {
+        this.userToSockets.set(userId, new Set())
+      }
+
+      this.userToSockets.get(userId).add(socket.id)
+      this.socketToUser.set(socket.id, userId)
+    } catch (e) {
+      if (this.options.requireAuth) {
+        socket.disconnect(true)
+      }
+    }
   }
 
-  /**
-   * Remove the socket id of the user
-   *
-   * @param socketId Id of the socket
-   */
-  removeSocket(socketId: string) {
-    const userId = this.socketToUser.get(socketId)
+  handleDisconnect(socket: Socket) {
+    const userId = this.socketToUser.get(socket.id)
     const sockets = this.userToSockets.get(userId)
 
-    sockets.delete(socketId)
+    if (!userId) {
+      return
+    }
+
+    sockets.delete(socket.id)
 
     if (sockets.size === 0) {
       this.userToSockets.delete(userId)
     }
+  }
 
-    this.socketToUser.delete(socketId)
+  afterInit(io: Namespace) {
+    this.io = io
+  }
+
+  getUserId(socketId: string) {
+    return new Id(this.socketToUser.get(socketId))
   }
 
   /**
@@ -123,9 +145,5 @@ export abstract class WsService {
     }
 
     return sockets
-  }
-
-  init(server: Server) {
-    this.io = server.of(this.namespace)
   }
 }

@@ -1,8 +1,8 @@
 import { ForbiddenException, Injectable } from '@nestjs/common'
-import { ChatMessage, ChatMessageDocument } from '../models/chat-message.model'
+import { ChatMessage, ChatMessageDocument } from './models/chat-message.model'
 import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
-import { ChatGroup, ChatGroupDocument } from '../models/chat-group.model'
+import { ChatGroup, ChatGroupDocument } from './models/chat-group.model'
 import { Id } from '@/common'
 
 @Injectable()

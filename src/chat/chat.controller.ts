@@ -1,8 +1,8 @@
 import { AuthGuard } from '@/auth/auth.guard'
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'
-import { FindMessagesDto } from '../dtos/find-messages.dto'
+import { FindMessagesDto } from './dtos/find-messages.dto'
 import { FindByIdDto } from '@/common/dtos/find-by-id.dto'
-import { ChatService } from '../services/chat.service'
+import { ChatService } from './chat.service'
 import { TokenPayload } from '@/auth/token-payload.decorator'
 import { ITokenPayload } from '@/auth/token-payload.interface'
 

@@ -36,10 +36,13 @@ export class UserController {
   async getUserByField(
     @Query() { username, address }: FindByUsernameOrAddressDto,
   ) {
+    if (!username && !address) {
+      const users = await this.userService.findAll()
+      return { users }
+    }
+
     const user = await (username
       ? this.userService.findByUsername(username)
-      : address
-      ? this.userService.findByAddress(address)
       : this.userService.findAll())
 
     if (!user) {

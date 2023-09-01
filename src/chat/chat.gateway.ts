@@ -3,30 +3,41 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
 } from '@nestjs/websockets'
-import { Server, Socket } from 'socket.io'
+import { Socket } from 'socket.io'
 import { JoinChatGroupDto } from './dtos/join-chat-group.dto'
-import { ChatWsService } from './services/chat-ws.service'
+import { ChatService } from './chat.service'
+import { BaseGateway } from '@/common/base.gateway'
+import { JwtService } from '@nestjs/jwt'
 
 @WebSocketGateway({
   namespace: 'chat',
   cors: true,
   transports: ['websocket'],
 })
-export class ChatGateway {
-  @WebSocketServer()
-  private readonly server: Server
-
-  constructor(private readonly chatWsService: ChatWsService) {}
+export class ChatGateway extends BaseGateway {
+  constructor(
+    private readonly chatService: ChatService,
+    jwtService: JwtService,
+  ) {
+    super(jwtService, {
+      namespace: 'chat',
+      requireAuth: true,
+    })
+  }
 
   @SubscribeMessage('chat/join')
   async joinChatGroup(
     @ConnectedSocket() client: Socket,
     @MessageBody() { chatGroupId }: JoinChatGroupDto,
   ) {
-    const userId = this.chatWsService.getUserId(client.id)
-    await this.chatWsService.addUserToChatRoom(userId, chatGroupId)
+    const userId = this.getUserId(client.id)
+
+    if (!(await this.chatService.isUserInChatGroup(chatGroupId, userId))) {
+      throw new Error('User is not in chat group')
+    }
+
+    this.addUserToRoom(userId, `chat/room:${chatGroupId}`)
   }
 
   @SubscribeMessage('chat/new-message')
@@ -34,7 +45,14 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody() { chatGroupId, content }: any,
   ) {
-    const userId = this.chatWsService.getUserId(client.id)
-    await this.chatWsService.handleNewMessage(chatGroupId, userId, content)
+    const senderId = this.getUserId(client.id)
+
+    const message = await this.chatService.createMessage(
+      chatGroupId,
+      senderId,
+      content,
+    )
+
+    this.emitToRoom(`chat/room:${chatGroupId}`, 'chat/new-message', message)
   }
 }
