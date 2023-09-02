@@ -8,11 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ProblemService } from './problem.service'
-import { TokenPayload } from '@/auth/token-payload.decorator'
-import { ITokenPayload } from '@/auth/token-payload.interface'
+import { TokenPayload } from 'auth/token-payload.decorator'
+import { ITokenPayload } from 'auth/token-payload.interface'
 import { UploadDataDto } from './dtos/upload-data.dto'
 import { FindByIdDto } from '@/common/dtos/find-by-id.dto'
-import { AuthGuard } from '@/auth/auth.guard'
+import { AuthGuard } from 'auth/auth.guard'
 import { FindProblemDto } from './dtos/find-problems.dto'
 
 @Controller('problem')
@@ -25,16 +25,6 @@ export class ProblemController {
       ? this.problemService.findByAuthor(limit, skip, author)
       : this.problemService.find(limit, skip))
     return { problems }
-  }
-
-  @UseGuards(AuthGuard)
-  @Post('/')
-  async create(@TokenPayload() payload: ITokenPayload, @Body() data: any) {
-    const problem = await this.problemService.create(
-      payload._id,
-      data.onchainId,
-    )
-    return { problem }
   }
 
   /**
@@ -54,13 +44,16 @@ export class ProblemController {
     @Body() data: UploadDataDto,
   ) {
     const problem = await this.problemService.uploadDataByAuthor(
-      payload._id,
       _id,
+      payload._id,
       {
         title: data.title,
         description: data.description,
+        image: data.image,
       },
     )
+
+    console.log('Problem uploaded: ', problem._id)
 
     return { problem }
   }

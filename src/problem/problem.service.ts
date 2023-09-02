@@ -65,12 +65,17 @@ export class ProblemService {
   async uploadDataByAuthor(
     problemId: Id,
     authorId: Id,
-    data: Pick<Problem, 'description' | 'title'>,
+    data: Pick<Problem, 'description' | 'title' | 'image'>,
   ) {
     const problem = await this.findByIdAndVerifyAuthor(problemId, authorId)
 
+    if (problem.status !== ProblemStatus.PREPARING) {
+      throw new BadRequestException('Data cannot be uploaded at this time')
+    }
+
     problem.description = data.description
     problem.title = data.title
+    problem.image = data.image
     problem.status = ProblemStatus.WAITING
 
     await problem.save()
@@ -122,7 +127,7 @@ export class ProblemService {
       throw new NotFoundException('Problem with given id is not exist')
     }
 
-    if (!authorId.equals(problem.author as any)) {
+    if (!authorId.toString() == (problem.author as any).toString()) {
       throw new ForbiddenException('You are not the author of this problem')
     }
     return problem

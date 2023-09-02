@@ -13,9 +13,9 @@ import { UserService } from './user.service'
 import { FindByIdDto } from '@/common/dtos/find-by-id.dto'
 import { FindByUsernameOrAddressDto } from './dtos/find-by-username-or-address.dto'
 import { UpdateCommonFields } from './dtos/update-common-field.dto'
-import { AuthGuard } from '@/auth/auth.guard'
-import { TokenPayload } from '@/auth/token-payload.decorator'
-import { ITokenPayload } from '@/auth/token-payload.interface'
+import { AuthGuard } from 'auth/auth.guard'
+import { TokenPayload } from 'auth/token-payload.decorator'
+import { ITokenPayload } from 'auth/token-payload.interface'
 
 @Controller('user')
 export class UserController {

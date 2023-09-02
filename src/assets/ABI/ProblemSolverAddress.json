@@ -1,0 +1,597 @@
+[
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "bidId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "expert",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "bidAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "BidPlaced",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_title",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_image",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            }
+        ],
+        "name": "createProblem",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "selectedExpert",
+                "type": "address"
+            }
+        ],
+        "name": "ExpertSelected",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "expert",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "FundsTransferred",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_bidAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_expertDescription",
+                "type": "string"
+            }
+        ],
+        "name": "placeBid",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "title",
+                "type": "string"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "ProblemCreated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "selectedExpert",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "cost",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProblemSolved",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "cost",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProblemUnsolved",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "Refund",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_bidId",
+                "type": "uint256"
+            }
+        ],
+        "name": "selectExpert",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address payable",
+                "name": "_selectedExpert",
+                "type": "address"
+            }
+        ],
+        "name": "solvedProblem",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "fallback"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            }
+        ],
+        "name": "unSolvedProblem",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "receive"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "contractBalances",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAllProblems",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "title",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "image",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address payable",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "selectedExpert",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "cost",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "solved",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "markedAsSolved",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "selecting",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct ProblemSolver.Problem[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getBids",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "bidId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "problemId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "expert",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "bidAmount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "expertDescription",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct ProblemSolver.ExpertBid[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "_expert",
+                "type": "address"
+            }
+        ],
+        "name": "getExpertBidId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_problemId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getProblem",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "title",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "image",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "selectedExpert",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "cost",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "solved",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "problemBids",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "bidId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "problemId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "expert",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "bidAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "expertDescription",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "problems",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "title",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "image",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+            },
+            {
+                "internalType": "address payable",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "selectedExpert",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "cost",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "solved",
+                "type": "bool"
+            },
+            {
+                "internalType": "bool",
+                "name": "markedAsSolved",
+                "type": "bool"
+            },
+            {
+                "internalType": "bool",
+                "name": "selecting",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

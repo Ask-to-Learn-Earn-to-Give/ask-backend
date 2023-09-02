@@ -10,7 +10,8 @@ services:
       - ./:/opt/ask-backend
     networks:
       - server-net
-      
+    extra_hosts:
+      - host.docker.internal:host-gateway
   mongodb:
     container_name: mongodb
     image: mongo:latest
@@ -37,3 +38,4 @@ volumes:
 networks:
   server-net:
     driver: bridge
+

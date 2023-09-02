@@ -4,6 +4,7 @@ import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { ChatGroup, ChatGroupDocument } from './models/chat-group.model'
 import { Id } from '@/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 @Injectable()
 export class ChatService {
@@ -12,6 +13,7 @@ export class ChatService {
     private readonly chatGroupModel: Model<ChatGroupDocument>,
     @InjectModel(ChatMessage.name)
     private readonly chatMessageModel: Model<ChatMessageDocument>,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async createChatGroup(
@@ -49,6 +51,8 @@ export class ChatService {
       senderId,
       content,
     })
+
+    this.eventEmitter.emit('chat.message.created', chatMessage)
 
     return chatMessage
   }

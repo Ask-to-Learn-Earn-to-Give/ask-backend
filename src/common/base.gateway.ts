@@ -140,10 +140,6 @@ export abstract class BaseGateway
     const strUserId = userId.toString()
     const sockets = this.userToSockets.get(strUserId)
 
-    if (!sockets) {
-      throw new Error(`User ${strUserId} has no sockets`)
-    }
-
-    return sockets
+    return sockets || []
   }
 }

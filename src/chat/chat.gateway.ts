@@ -9,11 +9,12 @@ import { JoinChatGroupDto } from './dtos/join-chat-group.dto'
 import { ChatService } from './chat.service'
 import { BaseGateway } from '@/common/base.gateway'
 import { JwtService } from '@nestjs/jwt'
+import { OnEvent } from '@nestjs/event-emitter'
 
 @WebSocketGateway({
   namespace: 'chat',
   cors: true,
-  transports: ['websocket'],
+  // transports: ['websocket'],
 })
 export class ChatGateway extends BaseGateway {
   constructor(
@@ -26,7 +27,7 @@ export class ChatGateway extends BaseGateway {
     })
   }
 
-  @SubscribeMessage('chat/join')
+  @SubscribeMessage('chat.user.join')
   async joinChatGroup(
     @ConnectedSocket() client: Socket,
     @MessageBody() { chatGroupId }: JoinChatGroupDto,
@@ -37,22 +38,25 @@ export class ChatGateway extends BaseGateway {
       throw new Error('User is not in chat group')
     }
 
-    this.addUserToRoom(userId, `chat/room:${chatGroupId}`)
+    this.addUserToRoom(userId, `chat.room.${chatGroupId}`)
   }
 
-  @SubscribeMessage('chat/new-message')
+  @SubscribeMessage('chat.user.send_message')
   async handleNewMessage(
     @ConnectedSocket() client: Socket,
     @MessageBody() { chatGroupId, content }: any,
   ) {
     const senderId = this.getUserId(client.id)
 
-    const message = await this.chatService.createMessage(
+    await this.chatService.createMessage(chatGroupId, senderId, content)
+  }
+
+  @OnEvent('chat.message.created')
+  handleNewMessageEvent({ chatGroupId, senderId, content }: any) {
+    this.emitToRoom(`chat.room.${chatGroupId}`, 'chat.message.created', {
       chatGroupId,
       senderId,
       content,
-    )
-
-    this.emitToRoom(`chat/room:${chatGroupId}`, 'chat/new-message', message)
+    })
   }
 }

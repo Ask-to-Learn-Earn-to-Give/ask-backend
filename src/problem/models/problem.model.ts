@@ -39,6 +39,9 @@ export class Problem {
   @Prop()
   description: string
 
+  @Prop()
+  image: string
+
   /**
    * @description
    * A problem is ready when author uploads all its other fields

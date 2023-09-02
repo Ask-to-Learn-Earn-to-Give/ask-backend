@@ -7,5 +7,9 @@ export class UploadDataDto {
 
   @IsString()
   @IsNotEmpty()
+  image: string
+
+  @IsString()
+  @IsNotEmpty()
   description: string
 }
