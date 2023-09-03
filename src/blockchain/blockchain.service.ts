@@ -18,7 +18,10 @@ export class BlockchainService implements OnModuleInit {
   constructor(private readonly eventEmitter: EventEmitter2) {}
 
   async onModuleInit() {
-    this.provider = new WebSocketProvider(process.env.NODE_WS_URL)
+    this.startConnection()
+  }
+
+  setUpEventListeners() {
     this.wallet = new Wallet(process.env.PRIVATE_KEY, this.provider)
 
     this.problemContract = new Contract(
@@ -41,25 +44,25 @@ export class BlockchainService implements OnModuleInit {
       'BidPlaced',
       (
         problemOnchainId: bigint,
-        bidId: bigint,
+        bidOnchainId: bigint,
         expertAddress: string,
         amount: bigint,
       ) => {
         this.eventEmitter.emit('problem.bid.created', {
-          problemOnchainId,
-          bidId,
+          problemOnchainId: Number(problemOnchainId),
+          bidOnchainId: Number(bidOnchainId),
           expertAddress: expertAddress.toLowerCase(),
-          amount,
+          amount: amount.toString(),
         })
       },
     )
 
     this.problemContract.on(
       'ExpertSelected',
-      (problemOnchainId: bigint, expert: string) => {
+      (problemOnchainId: bigint, expertAddress: string) => {
         this.eventEmitter.emit('problem.expert.selected', {
-          problemOnchainId,
-          expert,
+          problemOnchainId: Number(problemOnchainId),
+          expertAddress: expertAddress.toLowerCase(),
         })
       },
     )
@@ -74,6 +77,38 @@ export class BlockchainService implements OnModuleInit {
       this.eventEmitter.emit('problem.unsolved', {
         problemOnchainId,
       })
+    })
+  }
+
+  startConnection() {
+    let pingTimeout = null
+    let keepAliveInterval = null
+
+    this.provider = new WebSocketProvider(process.env.NODE_WS_URL)
+    this.wallet = new Wallet(process.env.PRIVATE_KEY, this.provider)
+
+    const websocket = this.provider.websocket as any
+
+    this.setUpEventListeners()
+
+    websocket.on('open', () => {
+      keepAliveInterval = setInterval(() => {
+        websocket.ping()
+        pingTimeout = setTimeout(() => {
+          websocket.terminate()
+        }, Number(process.env.NODE_WS_PING_TIMEOUT))
+      }, Number(process.env.NODE_WS_PING_INTERVAL))
+    })
+
+    websocket.on('close', () => {
+      console.log('The websocket connection was closed, restarting it')
+      clearInterval(keepAliveInterval)
+      clearTimeout(pingTimeout)
+      this.startConnection()
+    })
+
+    websocket.on('pong', () => {
+      clearInterval(pingTimeout)
     })
   }
 }

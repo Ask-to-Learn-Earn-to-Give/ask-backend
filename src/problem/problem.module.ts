@@ -6,13 +6,13 @@ import { Problem, ProblemSchema } from './models/problem.model'
 import { UserModule } from '@/user/user.module'
 import { ChatModule } from '@/chat/chat.module'
 import { ProblemGateway } from './problem.gateway'
-import { Bid, BidSchema } from './models/bid.model'
+import { ProblemBid, ProblemBidSchema } from './models/problem-bid.model'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Problem.name, schema: ProblemSchema },
-      { name: Bid.name, schema: BidSchema },
+      { name: ProblemBid.name, schema: ProblemBidSchema },
     ]),
     UserModule,
     ChatModule,

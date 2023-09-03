@@ -19,6 +19,9 @@ export class User {
 
   @Prop()
   avatarUrl: string
+
+  @Prop()
+  description: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

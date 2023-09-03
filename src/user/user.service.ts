@@ -98,7 +98,7 @@ export class UserService {
    */
   async updateCommonFields(
     id: Id,
-    fields: Pick<User, 'fullName'>,
+    fields: Pick<User, 'fullName' | 'avatarUrl' | 'description'>,
   ): Promise<UserDocument | null> {
     try {
       return await this.userModel.findByIdAndUpdate(
@@ -106,6 +106,8 @@ export class UserService {
         {
           $set: {
             fullName: fields.fullName,
+            avatarUrl: fields.avatarUrl,
+            description: fields.description,
           },
         },
         { new: true },

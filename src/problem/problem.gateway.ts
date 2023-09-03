@@ -21,8 +21,8 @@ export class ProblemGateway extends BaseGateway {
 
   /**
    * Excuting when a new problem is created in smart contract.
-   * Emit to user who created the problem to upload remaining fields like
-   * description, title, etc.
+   * Emit to user who created the problem to notify client to
+   * upload remaining fields like description, title, etc.
    *
    * @todo Implement event type
    */
@@ -40,5 +40,35 @@ export class ProblemGateway extends BaseGateway {
     })
 
     console.log(`Problem created: ${problem.id}`)
+  }
+
+  /**
+   * Executing when a new bid is placed in smart contract.
+   * Emit to expert who placed the bid to notify client to update remaining
+   * fields.
+   *
+   * @todo Implement event type
+   */
+  @OnEvent('problem.bid.created')
+  async handleProblemBidCreatedEvent({
+    problemOnchainId,
+    bidOnchainId,
+    expertAddress,
+    amount,
+  }: any) {
+    const expert = await this.userService.findByAddress(expertAddress)
+
+    const bid = await this.problemService.createBid(
+      problemOnchainId,
+      bidOnchainId,
+      expert._id,
+      amount,
+    )
+
+    this.emitToUser(expert._id, 'problem.bid.created', {
+      problemBidId: bid.id,
+    })
+
+    console.log(`Problem bid created: ${bidOnchainId}`)
   }
 }

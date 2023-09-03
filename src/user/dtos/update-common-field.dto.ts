@@ -5,4 +5,14 @@ export class UpdateCommonFields {
   @IsNotEmpty()
   @IsOptional()
   fullName?: string
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  avatarUrl?: string
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  description?: string
 }

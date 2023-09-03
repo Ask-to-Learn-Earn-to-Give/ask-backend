@@ -13,9 +13,9 @@ import { UserService } from './user.service'
 import { FindByIdDto } from '@/common/dtos/find-by-id.dto'
 import { FindByUsernameOrAddressDto } from './dtos/find-by-username-or-address.dto'
 import { UpdateCommonFields } from './dtos/update-common-field.dto'
-import { AuthGuard } from 'auth/auth.guard'
-import { TokenPayload } from 'auth/token-payload.decorator'
-import { ITokenPayload } from 'auth/token-payload.interface'
+import { AuthGuard } from '@/auth/auth.guard'
+import { TokenPayload } from '@/auth/token-payload.decorator'
+import { ITokenPayload } from '@/auth/token-payload.interface'
 
 @Controller('user')
 export class UserController {
@@ -56,10 +56,14 @@ export class UserController {
   @Patch('/common-fields')
   async updateCommonFields(
     @TokenPayload() { _id }: ITokenPayload,
-    @Body() { fullName }: UpdateCommonFields,
+    @Body() { fullName, avatarUrl, description }: UpdateCommonFields,
   ) {
     try {
-      return await this.userService.updateCommonFields(_id, { fullName })
+      return await this.userService.updateCommonFields(_id, {
+        fullName,
+        avatarUrl,
+        description,
+      })
     } catch (error) {
       throw new BadRequestException('User not found')
     }

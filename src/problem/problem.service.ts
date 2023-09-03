@@ -10,12 +10,15 @@ import { Model } from 'mongoose'
 import { Problem, ProblemDocument, ProblemStatus } from './models/problem.model'
 import { Id } from '@/common'
 import { ChatService } from '@/chat/chat.service'
+import { ProblemBid } from './models/problem-bid.model'
 
 @Injectable()
 export class ProblemService {
   constructor(
     @InjectModel(Problem.name)
     private readonly problemModel: Model<ProblemDocument>,
+    @InjectModel(ProblemBid.name)
+    private readonly problemBidModel: Model<ProblemBid>,
     private readonly chatService: ChatService,
   ) {}
 
@@ -131,5 +134,67 @@ export class ProblemService {
       throw new ForbiddenException('You are not the author of this problem')
     }
     return problem
+  }
+
+  async findBidById(id: Id) {
+    const bid = await this.problemBidModel.findById(id).populate('expert')
+    return bid
+  }
+
+  async findAllBids(problemId: Id) {
+    const bids = await this.problemBidModel
+      .find({ problemId })
+      .populate('expert')
+    return bids
+  }
+
+  async createBid(
+    problemOnchainId: number,
+    problemBidOnchainId: number,
+    expertId: Id,
+    amount: string,
+  ) {
+    const problem = await this.problemModel.findOne({
+      onchainId: problemOnchainId,
+    })
+
+    if (!problem) {
+      throw new NotFoundException('Problem with given id is not exist')
+    }
+
+    if (problem.status !== ProblemStatus.WAITING) {
+      throw new BadRequestException('Bid cannot be created at this time')
+    }
+
+    const bid = await this.problemBidModel.create({
+      problemId: problem._id,
+      onchainId: problemBidOnchainId,
+      expert: expertId,
+      amount,
+    })
+
+    return bid
+  }
+
+  async uploadBidDataByExpert(
+    problemBidId: Id,
+    expertId: Id,
+    data: Pick<ProblemBid, 'description'>,
+  ) {
+    const bid = await this.problemBidModel.findById(problemBidId)
+
+    if (!bid) {
+      throw new NotFoundException('Bid with given id is not exist')
+    }
+
+    if (bid.expert.toString() !== expertId.toString()) {
+      throw new ForbiddenException('You are not the expert of this bid')
+    }
+
+    bid.description = data.description
+
+    await bid.save()
+
+    return bid
   }
 }
