@@ -11,6 +11,7 @@ import { Problem, ProblemDocument, ProblemStatus } from './models/problem.model'
 import { Id } from '@/common'
 import { ChatService } from '@/chat/chat.service'
 import { ProblemBid } from './models/problem-bid.model'
+import { UserService } from '@/user/user.service'
 
 @Injectable()
 export class ProblemService {
@@ -20,6 +21,7 @@ export class ProblemService {
     @InjectModel(ProblemBid.name)
     private readonly problemBidModel: Model<ProblemBid>,
     private readonly chatService: ChatService,
+    private readonly userService: UserService,
   ) {}
 
   async findById(id: Id) {
@@ -93,29 +95,36 @@ export class ProblemService {
    * This method will update problem status to `ProblemStatus.PREPARING` and
    * create chat group for author and expert.
    *
-   * @param problemId
-   * @param authorId
-   * @param expertId
+   * @param problemOnchainId
+   * @param bidId
    * @returns Updated problem
    */
-  async selectExpert(problemId: Id, authorId: Id, expertId: Id) {
-    const problem = await this.findByIdAndVerifyAuthor(problemId, authorId)
+  async selectBid(problemOnchainId: number, expertAddress: string) {
+    const problem = await this.problemModel.findOne({
+      onchainId: problemOnchainId,
+    })
 
     if (problem.status !== ProblemStatus.WAITING) {
       throw new BadRequestException('Expert cannot be selected at this time')
     }
 
+    const expert = await this.userService.findByAddress(expertAddress)
+    const bid = await this.problemBidModel.findOne({
+      expert: expert._id,
+      problemId: problem._id,
+    })
+
     // create chat group for author and expert
     const chatGroup = await this.chatService.createChatGroup(
       `Problem ${problem.onchainId}`,
-      authorId,
+      problem.author as any,
       true,
-      [authorId, expertId],
+      [problem.author as any, expert._id],
     )
 
     // update problem
-    problem.status = ProblemStatus.PREPARING
-    problem.expert = expertId as any
+    problem.status = ProblemStatus.ONPROGRESS
+    problem.expert = expert._id as any
     problem.chatGroupId = chatGroup._id
 
     await problem.save()

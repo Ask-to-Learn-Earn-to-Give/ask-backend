@@ -60,7 +60,7 @@ export class BlockchainService implements OnModuleInit {
     this.problemContract.on(
       'ExpertSelected',
       (problemOnchainId: bigint, expertAddress: string) => {
-        this.eventEmitter.emit('problem.expert.selected', {
+        this.eventEmitter.emit('problem.bid.selected', {
           problemOnchainId: Number(problemOnchainId),
           expertAddress: expertAddress.toLowerCase(),
         })

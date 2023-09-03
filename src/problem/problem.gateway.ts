@@ -2,7 +2,7 @@ import { BaseGateway } from '@/common/base.gateway'
 import { UserService } from '@/user/user.service'
 import { OnEvent } from '@nestjs/event-emitter'
 import { JwtService } from '@nestjs/jwt'
-import { OnGatewayConnection, WebSocketGateway } from '@nestjs/websockets'
+import { WebSocketGateway } from '@nestjs/websockets'
 import { ProblemService } from './problem.service'
 
 @WebSocketGateway({
@@ -70,5 +70,18 @@ export class ProblemGateway extends BaseGateway {
     })
 
     console.log(`Problem bid created: ${bidOnchainId}`)
+  }
+
+  @OnEvent('problem.bid.selected')
+  async handleProblemExpertSelectedEvent({
+    problemOnchainId,
+    expertAddress,
+  }: any) {
+    const problem = await this.problemService.selectBid(
+      problemOnchainId,
+      expertAddress,
+    )
+
+    console.log(`Problem bid selected: ${problemOnchainId}`)
   }
 }
