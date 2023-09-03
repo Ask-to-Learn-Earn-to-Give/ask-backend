@@ -50,21 +50,12 @@ export class ProblemService {
   }
 
   async create(authorId: Id, onchainId: number) {
-    try {
-      const problem = await this.problemModel.create({
-        onchainId: onchainId,
-        author: authorId,
-        status: ProblemStatus.PREPARING,
-      })
-      return problem
-    } catch (err) {
-      if (err.code === 11000) {
-        throw new ConflictException(
-          'Problem with given onchainId is already exist',
-        )
-      }
-      throw err
-    }
+    const problem = await this.problemModel.create({
+      onchainId: onchainId,
+      author: authorId,
+      status: ProblemStatus.PREPARING,
+    })
+    return problem
   }
 
   async uploadDataByAuthor(

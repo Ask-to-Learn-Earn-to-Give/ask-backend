@@ -10,7 +10,9 @@ import { BlockchainModule } from './blockchain/blockchain.module'
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGO_URI, { dbName: 'askify' }),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      dbName: 'askify',
+    }),
     CacheModule.register({
       isGlobal: true,
     }),
