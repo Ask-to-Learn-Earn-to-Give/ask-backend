@@ -25,7 +25,10 @@ export class ProblemService {
   ) {}
 
   async findById(id: Id) {
-    const problem = await this.problemModel.findById(id).populate('author')
+    const problem = await this.problemModel
+      .findById(id)
+      .populate('author')
+      .populate('expert')
     return problem
   }
 
@@ -33,6 +36,7 @@ export class ProblemService {
     const problems = await this.problemModel
       .find()
       .populate('author')
+      .populate('expert')
       .limit(limit)
       .skip(skip)
     return problems
@@ -40,12 +44,11 @@ export class ProblemService {
 
   async findByAuthor(limit: number, skip: number, authorId: Id) {
     const problems = await this.problemModel
-      .find(
-        { author: authorId },
-        { author: 0 }, // this field is unnecessary
-      )
+      .find({ author: authorId })
       .limit(limit)
       .skip(skip)
+      .populate('author')
+      .populate('expert')
     return problems
   }
 

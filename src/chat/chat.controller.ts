@@ -11,6 +11,12 @@ import { ITokenPayload } from '@/auth/token-payload.interface'
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @Get('/:_id')
+  async findChatGroup(@Param() { _id: chatGroupId }: FindByIdDto) {
+    const chatGroup = await this.chatService.findChatGroupById(chatGroupId)
+    return { chatGroup }
+  }
+
   @Get('/:_id/messages')
   async findMessages(
     @Param() { _id: chatGroupId }: FindByIdDto,
@@ -23,6 +29,6 @@ export class ChatController {
       limit,
       skip,
     )
-    return messages
+    return { messages }
   }
 }

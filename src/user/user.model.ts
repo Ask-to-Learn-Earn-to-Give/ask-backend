@@ -14,6 +14,7 @@ export class User {
   @Prop()
   fullName: string
 
+  @Prop()
   username: string
 
   @Prop()

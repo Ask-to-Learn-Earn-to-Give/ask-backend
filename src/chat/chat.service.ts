@@ -37,9 +37,7 @@ export class ChatService {
   }
 
   async findChatGroupById(id: Id) {
-    const chatGroup = await this.chatMessageModel
-      .findById(id)
-      .populate('members')
+    const chatGroup = await this.chatGroupModel.findById(id).populate('members')
     return chatGroup
   }
 

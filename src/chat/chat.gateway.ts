@@ -39,6 +39,8 @@ export class ChatGateway extends BaseGateway {
     }
 
     this.addUserToRoom(userId, `chat.room.${chatGroupId}`)
+
+    console.log(`User ${userId} joined chat group ${chatGroupId}`)
   }
 
   @SubscribeMessage('chat.user.send_message')
