@@ -18,6 +18,9 @@ export class User {
   username: string
 
   @Prop()
+  email: string
+
+  @Prop()
   avatarUrl: string
 
   @Prop()

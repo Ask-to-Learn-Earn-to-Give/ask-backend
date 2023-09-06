@@ -14,5 +14,10 @@ export class UpdateCommonFields {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
+  email?: string
+
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
   description?: string
 }

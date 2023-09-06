@@ -24,7 +24,7 @@ export class UserController {
   @Get('/:_id')
   async getUserById(@Param() { _id }: FindByIdDto) {
     const user = await this.userService.findById(_id)
-    this.userService.create
+
     if (!user) {
       throw new NotFoundException('User not found')
     }
@@ -43,7 +43,7 @@ export class UserController {
 
     const user = await (username
       ? this.userService.findByUsername(username)
-      : this.userService.findAll())
+      : this.userService.findByAddress(address))
 
     if (!user) {
       throw new NotFoundException('User not found')
@@ -56,13 +56,14 @@ export class UserController {
   @Patch('/common-fields')
   async updateCommonFields(
     @TokenPayload() { _id }: ITokenPayload,
-    @Body() { fullName, avatarUrl, description }: UpdateCommonFields,
+    @Body() { fullName, avatarUrl, description, email }: UpdateCommonFields,
   ) {
     try {
       return await this.userService.updateCommonFields(_id, {
         fullName,
         avatarUrl,
         description,
+        email,
       })
     } catch (error) {
       throw new BadRequestException('User not found')
