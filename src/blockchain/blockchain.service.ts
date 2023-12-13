@@ -1,12 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import {
-  Contract,
-  JsonRpcProvider,
-  Network,
-  Wallet,
-  WebSocketProvider,
-} from 'ethers'
+import { Contract, Wallet, WebSocketProvider } from 'ethers'
 import PROBLEM_ABI from '@/assets/ABI/ProblemSolverAddress.json'
 
 @Injectable()
