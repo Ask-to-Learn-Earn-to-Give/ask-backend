@@ -39,7 +39,7 @@ export class ProblemGateway extends BaseGateway {
       problemId: problem.id,
     })
 
-    console.log(`Problem created: ${problem.id}`)
+    console.log(`Problem created: ${problem.id} by ${user._id}`)
   }
 
   /**

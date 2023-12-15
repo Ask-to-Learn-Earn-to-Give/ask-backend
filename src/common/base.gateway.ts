@@ -42,6 +42,8 @@ export abstract class BaseGateway
 
       this.userToSockets.get(userId).add(socket.id)
       this.socketToUser.set(socket.id, userId)
+
+      console.log(`User ${userId} connected`)
     } catch (e) {
       if (this.options.requireAuth) {
         socket.disconnect(true)
@@ -62,6 +64,8 @@ export abstract class BaseGateway
     if (sockets.size === 0) {
       this.userToSockets.delete(userId)
     }
+
+    console.log(`User ${userId} disconnected`)
   }
 
   afterInit(io: Namespace) {
@@ -81,7 +85,7 @@ export abstract class BaseGateway
    */
   emitToUser(userId: Id, event: string, data: any) {
     const sockets = this.getSockets(userId)
-
+    console.log(sockets)
     for (const socketId of sockets) {
       this.io.to(socketId).emit(event, data)
     }
